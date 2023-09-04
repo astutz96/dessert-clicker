@@ -103,7 +103,7 @@ class MainActivity : ComponentActivity() {
         //Called when app comes back from being backgrounded
         // makes the App visible on the screen but the user is not able to interact yet
         super.onStart()
-        Log.d(TAG, "onStart Called")
+        Log.d(TAG, "onStart Called") //Test
     }
 
     override fun onResume() {
