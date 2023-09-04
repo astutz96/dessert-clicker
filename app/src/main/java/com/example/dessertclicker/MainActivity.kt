@@ -20,6 +20,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -48,6 +49,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -63,9 +65,16 @@ import com.example.dessertclicker.data.Datasource
 import com.example.dessertclicker.model.Dessert
 import com.example.dessertclicker.ui.theme.DessertClickerTheme
 
+private const val TAG = "MainActivity"
+
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        //Called when the system creates the app
+
+        Log.d(TAG, "onCreate Called")
         setContent {
             DessertClickerTheme {
                 // A surface container using the 'background' color from the theme
@@ -77,6 +86,75 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    /*
+    SUMMARY
+    - OnResume & OnPause deal with "Focus" and fire any time the app enters/leaves focus. For example a dialogue shows on top
+    - OnCreate vs OnRestart. Oncreate is called the FIRST time an activity is created.
+        after that OnRestart is called in its place when an app is brought back to the foreground
+    - OnStart & OnStop deal with "visibility" and fire any time an app enters/leaves visibility.
+        For example when an app is backgrounded, then brought back to the foreground
+    - OnDestroy is called just before an activity is destroyed, and is triggered by a Configuration Change
+        such as a change in screen orientation
+     */
+
+    override fun onStart() {
+        //Called when app comes back from being backgrounded
+        // makes the App visible on the screen but the user is not able to interact yet
+        super.onStart()
+        Log.d(TAG, "onStart Called")
+    }
+
+    override fun onResume() {
+        //Called when app comes back from being backgrounded
+        //Called when the activity gains focus, (Opposite of onPause)
+        // Brings the app to the foreground and the user is now able to interact
+        super.onResume()
+        Log.d(TAG, "onResume Called")
+    }
+
+    override fun onRestart() {
+        //Called when an activity returns to the foreground, but it not being created for the first time.
+        //Put code that you only want to call if your activity is not being started for the first time.
+        //Called when app comes back from being backgrounded
+        // Only called if onStop() was called and the app is subsequently restarted
+        super.onRestart()
+        Log.d(TAG, "onRestart Called")
+    }
+
+    override fun onPause() {
+        /*
+        - Called when the app goes into the background
+        - Called when the app is no longer in focus (like a dialogue or something shows on top of the activity).
+            An activity can be partially visible on the screen but not have the user focus
+        -  The interruption with only onPause() usually lasts a short time before returning to your activity or navigating to another activity or app.
+            You generally want to keep updating the UI so the rest of your app doesn't appear to freeze.
+        */
+        super.onPause()
+        Log.d(TAG, "onPause Called")
+    }
+
+    override fun onStop() {
+        //Called when the app goes into the background
+        //Called when the app is no longer visible
+        super.onStop()
+        Log.d(TAG, "onStop Called")
+    }
+
+    override fun onDestroy() {
+        /*
+            - Called whenever there is a "configuration change".
+                - A configuration change occurs when the state of the device changes so radically that
+                    the easiest way for the system to resolve the change is to completely shut down
+                    and rebuild the activity
+                - Example: Device orientation changes (Screen Rotation)
+            - Called after onStop(), just before the activity is destroyed, which can happend 2 ways:
+                1. App's code calls finish()
+                2. System needs to destroy and re-create the activity due to a configuration change
+         */
+        super.onDestroy()
+        Log.d(TAG, "onDestroy Called")
     }
 }
 
@@ -134,15 +212,15 @@ private fun DessertClickerApp(
     desserts: List<Dessert>
 ) {
 
-    var revenue by remember { mutableStateOf(0) }
-    var dessertsSold by remember { mutableStateOf(0) }
+    var revenue by rememberSaveable { mutableStateOf(0) }
+    var dessertsSold by rememberSaveable { mutableStateOf(0) }
 
-    val currentDessertIndex by remember { mutableStateOf(0) }
+    val currentDessertIndex by rememberSaveable { mutableStateOf(0) }
 
-    var currentDessertPrice by remember {
+    var currentDessertPrice by rememberSaveable {
         mutableStateOf(desserts[currentDessertIndex].price)
     }
-    var currentDessertImageId by remember {
+    var currentDessertImageId by rememberSaveable {
         mutableStateOf(desserts[currentDessertIndex].imageId)
     }
 
