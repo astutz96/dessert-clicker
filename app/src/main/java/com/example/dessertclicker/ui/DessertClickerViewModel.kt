@@ -14,12 +14,10 @@ class DessertClickerViewModel : ViewModel() {
     val uiState: StateFlow<DessertClickerUiState> = _uiState.asStateFlow()
 
     private var desserts: MutableSet<Dessert> = mutableSetOf()
-    private var currentDessertIndex :  Int = 0;
 
     init {
         desserts = dessertList.toMutableSet()
-        currentDessertIndex = 0
-        _uiState.value = DessertClickerUiState(currentDessertImageId = desserts.elementAt(currentDessertIndex).imageId)
+        _uiState.value = DessertClickerUiState(currentDessertImageId = desserts.first().imageId)
     }
 
     fun userClickedDessert() {
@@ -31,11 +29,10 @@ class DessertClickerViewModel : ViewModel() {
                 currentDessertImageId = dessertToShow.imageId,
             )
         }
-        currentDessertIndex++
     }
     
-    fun determineDessertToShow(): Dessert{
-        var dessertToShow = desserts.elementAt(currentDessertIndex)
+    private fun determineDessertToShow(): Dessert{
+        var dessertToShow = desserts.first()
         for(dessert in desserts){
             if(_uiState.value.dessertsSold >= dessert.startProductionAmount){
                 dessertToShow = dessert
