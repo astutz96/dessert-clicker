@@ -278,7 +278,7 @@ fun DessertClickerScreen(
                         .width(dimensionResource(R.dimen.image_size))
                         .height(dimensionResource(R.dimen.image_size))
                         .align(Alignment.Center)
-                        .clickable { onDessertClicked },
+                        .clickable { onDessertClicked() },
                     contentScale = ContentScale.Crop,
                 )
             }
